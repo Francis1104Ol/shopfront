@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../lib/api";
+import { useToast } from "../context/ToastContext";
 
 export default function Cart() {
   const { items, updateQuantity, removeItem, total } = useCart();
@@ -10,6 +11,7 @@ export default function Cart() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const {showToast} =useToast()
 
   async function handleCheckout() {
     if (!auth) {
@@ -25,7 +27,7 @@ export default function Cart() {
       );
       window.location.href = url; // redirect to Stripe's hosted checkout page
     } catch (err) {
-      setError(err.message);
+      showToast(message || "Checkout failed. Please try again.", "error");
       setLoading(false);
     }
   }

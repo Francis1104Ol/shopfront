@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { ToastProvider } from "./context/ToastContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NavBar from "./components/NavBar";
 import NotFound from "./pages/NotFound";
@@ -13,13 +14,15 @@ import Orders from "./pages/Orders";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
+import Toast from "./components/Toast";
 
 export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <BrowserRouter>
+        <ToastProvider>        <BrowserRouter>
           <NavBar />
+          <Toast />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/product/:id" element={<ProductDetail />} />
@@ -51,6 +54,7 @@ export default function App() {
            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </ToastProvider>
       </CartProvider>
     </AuthProvider>
     

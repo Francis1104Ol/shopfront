@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
-
+import { useToast } from "../context/ToastContext";
 export default function Login() {
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const {showToast} =useToast()
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -18,9 +19,10 @@ export default function Login() {
     try {
       const data = mode === "login" ? await api.login(form) : await api.register(form);
       login(data.user, data.token);
+      showToast("Welcome back!","success")
       navigate("/");
     } catch (err) {
-      setError(err.message);
+      showToast(err.message|| "Failed to log in", "error");
     } finally {
       setLoading(false);
     }

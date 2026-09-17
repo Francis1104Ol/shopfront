@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { useCart } from "../context/CartContext";
+import ProductDetailSkeleton from "../components/ProductDetailSkeleton";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -11,14 +12,26 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
   const [added, setAdded] = useState(false);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.getProduct(id).then(setProduct).catch((e) => setError(e.message));
+    setLoading(true);
+    setError("");
+    api.getProduct(id).then(setProduct).catch((e) => setError(e.message)).finally(()=>setLoading(false));
   }, [id]);
 
+  if(loading){
+    return <ProductDetailSkeleton/>
+  }
   if (error) return <p className="max-w-3xl mx-auto p-6 text-red-600 text-sm">{error}</p>;
-  if (!product) return <p className="max-w-3xl mx-auto p-6 text-muted text-sm">Loading...</p>;
-
+  
+  if (!product) {
+  return (
+    <p className="max-w-3xl mx-auto p-6 text-muted text-sm">
+      Product not found.
+    </p>
+  );
+}
   function handleAdd() {
     addItem(product, quantity);
     setAdded(true);

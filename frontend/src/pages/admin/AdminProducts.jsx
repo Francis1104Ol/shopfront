@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../lib/api";
 import { useAuth } from "../../context/AuthContext";
-
+import { useToast } from "../../context/ToastContext";
 const EMPTY_FORM = { name: "", description: "", price: "", image_url: "", category: "", stock: "" };
 
 export default function AdminProducts() {
@@ -11,6 +11,7 @@ export default function AdminProducts() {
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const {showToast} = useToast()
 
   function load() {
     api.listProducts().then(setProducts).catch((e) => setError(e.message));
@@ -37,19 +38,20 @@ export default function AdminProducts() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
     setSaving(true);
     const payload = { ...form, price: Number(form.price), stock: Number(form.stock) };
     try {
       if (editingId) {
         await api.updateProduct(editingId, payload, auth.token);
+        showToast("Product updated", "success")
       } else {
         await api.createProduct(payload, auth.token);
+        showToast("Product created", "success")
       }
       cancelEdit();
       load();
     } catch (err) {
-      setError(err.message);
+      showToast(err.message, "error");
     } finally {
       setSaving(false);
     }
@@ -59,9 +61,10 @@ export default function AdminProducts() {
     if (!confirm("Delete this product?")) return;
     try {
       await api.deleteProduct(id, auth.token);
+       showToast("Product deleted", "Success")
       load();
     } catch (err) {
-      setError(err.message);
+      showToast(err.message,"error");
     }
   }
 
@@ -112,7 +115,6 @@ export default function AdminProducts() {
             onChange={(e) => setForm({ ...form, stock: e.target.value })}
             required
           />
-          {error && <p className="text-red-600 text-sm">{error}</p>}
           <div className="flex gap-2">
             <button
               type="submit"

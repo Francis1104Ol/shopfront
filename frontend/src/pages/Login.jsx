@@ -6,7 +6,6 @@ import { useToast } from "../context/ToastContext";
 export default function Login() {
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const {showToast} =useToast()
@@ -14,7 +13,6 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
     setLoading(true);
     try {
       const data = mode === "login" ? await api.login(form) : await api.register(form);
@@ -60,7 +58,6 @@ export default function Login() {
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
           />
-          {error && <p className="text-red-600 text-sm">{error}</p>}
           <button
             type="submit"
             disabled={loading}

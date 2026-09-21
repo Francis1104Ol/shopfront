@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../lib/api";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 
 const STATUSES = ["pending", "paid", "shipped", "cancelled"];
 const STATUS_COLORS = {
@@ -13,7 +14,7 @@ const STATUS_COLORS = {
 export default function AdminOrders() {
   const { auth } = useAuth();
   const [orders, setOrders] = useState([]);
-  const [error, setError] = useState("");
+  const {showToast} = useToast();
 
   function load() {
     api.allOrders(auth.token).then(setOrders).catch((e) => setError(e.message));
@@ -24,16 +25,16 @@ export default function AdminOrders() {
   async function changeStatus(id, status) {
     try {
       await api.updateOrderStatus(id, status, auth.token);
+      showToast("Order status updated", "success")
       load();
     } catch (err) {
-      setError(err.message);
+      showToast(err.message, 'error');
     }
   }
 
   return (
     <div>
       <h2 className="font-bold text-ink mb-4">All orders ({orders.length})</h2>
-      {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
       <div className="space-y-3">
         {orders.map((o) => (
           <div key={o._id} className="bg-white rounded-xl shadow p-4">

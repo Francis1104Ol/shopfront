@@ -30,4 +30,7 @@ export const api = {
   allOrders: (token) => request("/orders/all", { token }),
   updateOrderStatus: (id, status, token) =>
     request(`/orders/${id}/status`, { method: "PUT", body: { status }, token }),
+  getReviews:(productId) =>request(`/reviews/product/${productId}`),
+  createReview: (productId, payload, token) =>request(`/reviews/product/${productId}`,{method: "POST", body: payload, token}),
+  updateReview: (reviewId, payload, token) =>request(`/reviews/${reviewId}`, {method: "PUT", body: payload, token })
 };

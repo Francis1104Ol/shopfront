@@ -11,8 +11,6 @@ function signToken(user) {
   });
 }
 
-// Public registration always creates a "customer" — admins are created via the
-// seed script (src/seed-admin.js), never through this open endpoint.
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {

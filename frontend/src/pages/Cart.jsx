@@ -18,7 +18,6 @@ export default function Cart() {
       navigate("/login");
       return;
     }
-    setError("");
     setLoading(true);
     try {
       const { url } = await api.checkout(
@@ -27,20 +26,20 @@ export default function Cart() {
       );
       window.location.href = url; // redirect to Stripe's hosted checkout page
     } catch (err) {
-      showToast(message || "Checkout failed. Please try again.", "error");
+      showToast(err.message || "Checkout failed. Please try again.", "error");
       setLoading(false);
     }
   }
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-ink mb-6">Your cart</h1>
+      <h1 className="text-2xl font-bold text-ink mb-6 ">Your cart</h1>
 
       {items.length === 0 && <p className="text-muted text-sm">Your cart is empty.</p>}
 
       <div className="space-y-3">
         {items.map((item) => (
-          <div key={item.productId} className="bg-white rounded-xl shadow p-4 flex items-center gap-4">
+          <div key={item.productId} className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
               {item.image_url && <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />}
             </div>
@@ -55,12 +54,14 @@ export default function Cart() {
               onChange={(e) => updateQuantity(item.productId, Number(e.target.value))}
               className="w-16 border border-gray-300 rounded-lg px-2 py-1 text-sm"
             />
+            <div className="flex items-center justify-between sm:w-40">
             <span className="font-semibold text-ink text-sm w-16 text-right">
               ${(item.price * item.quantity).toFixed(2)}
             </span>
             <button onClick={() => removeItem(item.productId)} className="text-red-500 text-xs hover:underline">
               Remove
             </button>
+            </div>
           </div>
         ))}
       </div>
@@ -71,7 +72,6 @@ export default function Cart() {
             <span className="font-semibold text-ink">Total</span>
             <span className="text-xl font-bold text-brand">${total.toFixed(2)}</span>
           </div>
-          {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
           <button
             onClick={handleCheckout}
             disabled={loading}

@@ -7,7 +7,7 @@ const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/products");
 const orderRoutes = require("./routes/orders");
 const webhookRoutes = require("./routes/webhook");
-
+const reviewRoutes =require('./routes/reviews')
 const app = express();
 app.use(cors());
 
@@ -21,7 +21,7 @@ app.get("/api/health", (req, res) => res.json({ ok: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
-
+app.use("/api/reviews", reviewRoutes)
 const PORT = process.env.PORT || 4000;
 
 connectDB()

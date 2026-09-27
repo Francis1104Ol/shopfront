@@ -7,10 +7,20 @@ const router = express.Router();
 // ─── Public: list products ───
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const search = req.query.search?.trim();
+    
+    const filter = search
+      ? {
+          $or: [
+            { name: { $regex: search, $options: "i" } },
+            { category: { $regex: search, $options: "i" } }
+          ]
+        }
+      : {};
+
+    const products = await Product.find(filter).sort({ createdAt: -1 });
     res.json(products);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Failed to list products" });
   }
 });

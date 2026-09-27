@@ -19,7 +19,11 @@ export const api = {
   register: (payload) => request("/auth/register", { method: "POST", body: payload }),
   login: (payload) => request("/auth/login", { method: "POST", body: payload }),
 
-  listProducts: () => request("/products"),
+   listProducts: (search) => {
+    const trimmed = search?.trim();
+    const path = trimmed ? `/products?search=${encodeURIComponent(trimmed)}` : "/products";
+    return request(path);
+  },
   getProduct: (id) => request(`/products/${id}`),
   createProduct: (payload, token) => request("/products", { method: "POST", body: payload, token }),
   updateProduct: (id, payload, token) => request(`/products/${id}`, { method: "PUT", body: payload, token }),

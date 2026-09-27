@@ -14,8 +14,8 @@ const STATUS_COLORS = {
 export default function Orders() {
   const { auth } = useAuth();
   const [orders, setOrders] = useState([]);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const {showToast} =useToast()
 
   useEffect(() => {
     api.myOrders(auth.token)

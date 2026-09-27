@@ -9,7 +9,6 @@ export default function Cart() {
   const { items, updateQuantity, removeItem, total } = useCart();
   const { auth } = useAuth();
   const navigate = useNavigate();
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const {showToast} =useToast()
 

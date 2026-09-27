@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
+import Logo from "./Logo";
 
 export default function NavBar() {
   const { auth, logout } = useAuth();
@@ -13,7 +14,7 @@ export default function NavBar() {
     <>
       <div className="bg-ink text-white px-6 py-4 flex items-center justify-between">
       <Link to="/" className="font-bold text-lg">
-        Shopfront
+        <Link to="/"><Logo /></Link>
       </Link>
       <button onClick={()=>setIsOpen(!isOpen)}
       className="sm:hidden text-xl focus:outline-none"

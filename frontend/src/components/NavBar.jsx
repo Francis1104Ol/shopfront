@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
@@ -9,12 +9,14 @@ export default function NavBar() {
   const { count } = useCart();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  if (location.pathname === "/login") return null;
 
   return (
     <>
       <div className="bg-ink text-white px-6 py-4 flex items-center justify-between">
       <Link to="/" className="font-bold text-lg">
-        <Link to="/"><Logo /></Link>
+        <Logo />
       </Link>
       <button onClick={()=>setIsOpen(!isOpen)}
       className="sm:hidden text-xl focus:outline-none"

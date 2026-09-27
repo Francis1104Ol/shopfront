@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import OrderCardSkeleton from "../components/OrderCardSkeleton";
-
+import { useToast } from "../context/ToastContext";
 
 const STATUS_COLORS = {
   pending: "bg-gray-200 text-gray-700",
@@ -15,12 +15,15 @@ export default function Orders() {
   const { auth } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {showToast} =useToast()
+  const {showToast} = useToast()
+
 
   useEffect(() => {
     api.myOrders(auth.token)
     .then(setOrders)
-    .catch((e) => setError(e.message))
+    .catch((e) => {
+      showToast(e.message, "error");
+  })
     .finally(()=> setLoading(false))
 
   }, [auth.token]);
@@ -30,12 +33,6 @@ export default function Orders() {
     <h1 className="text-2xl font-bold text-ink mb-6">
       My orders
     </h1>
-
-    {error && (
-      <p className="text-red-600 text-sm">
-        {error}
-      </p>
-    )}
 
     {!loading && orders.length === 0 && (
       <p className="text-muted text-sm">

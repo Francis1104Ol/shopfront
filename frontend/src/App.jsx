@@ -15,7 +15,8 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
 import Toast from "./components/Toast";
-
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 export default function App() {
   return (
     <AuthProvider>
@@ -51,7 +52,10 @@ export default function App() {
               
               
             </Route>
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+           <Route path="/reset-password" element={<ResetPassword />} />
            <Route path="*" element={<NotFound />} />
+           
           </Routes>
         </BrowserRouter>
         </ToastProvider>

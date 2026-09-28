@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useNavigate} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import Logo from "../components/Logo";
 import { api } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
-
+import PasswordInput from "../components/PasswordInput"
 export default function Login() {
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -28,8 +28,7 @@ export default function Login() {
       setLoading(false);
     }
   }
-     
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
       <div className="relative w-full max-w-3xl h-[500px] bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -49,14 +48,15 @@ export default function Login() {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
             />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              required
-            />
+              <PasswordInput
+    value={form.password}
+    onChange={(e) => setForm({ ...form, password: e.target.value })}
+  />
+    <div className="text-right">
+    <Link to="/forgot-password" className="text-xs text-brand hover:underline">
+      Forgot password?
+    </Link>
+  </div>
             <button
               type="submit"
               disabled={loading || mode !== "login"}
@@ -89,14 +89,10 @@ export default function Login() {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
             />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              required
-            />
+             <PasswordInput
+    value={form.password}
+    onChange={(e) => setForm({ ...form, password: e.target.value })}
+  />
             <button
               type="submit"
               disabled={loading || mode !== "register"}

@@ -11,6 +11,8 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   if (location.pathname === "/login") return null;
+  const hideOn = ["/login", "/forgot-password", "/reset-password"];
+if (hideOn.includes(location.pathname)) return null;
 
   return (
     <>

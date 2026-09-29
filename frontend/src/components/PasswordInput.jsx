@@ -13,25 +13,23 @@ const EyeOffIcon = (
   </svg>
 );
 
-export default function PasswordInput({ value, onChange, placeholder = "Password", required = true }) {
+export default function PasswordInput({ value, onChange, placeholder = "Password", required = true, variant = "light" }) {
   const [show, setShow] = useState(false);
+const styles =
+  variant === "glass"
+    ? "w-full bg-white/10 border border-white/30 text-white placeholder-white/70 rounded-lg px-3 py-2 pr-10 text-sm"
+    : variant === "dark"
+    ? "w-full bg-black border border-gray-700 text-white placeholder-gray-500 rounded-lg px-3 py-2 pr-10 text-sm"
+    : "w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm";
 
+const iconColor =
+  variant === "glass" || variant === "dark"
+    ? "text-gray-400 hover:text-white"
+    : "text-muted hover:text-ink";
   return (
     <div className="relative">
-      <input
-        type={show ? "text" : "password"}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        required={required}
-        className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm"
-      />
-      <button
-        type="button"
-        onClick={() => setShow(!show)}
-        className="absolute inset-y-0 right-0 px-3 flex items-center text-muted hover:text-ink"
-        aria-label={show ? "Hide password" : "Show password"}
-      >
+      <input type={show ? "text" : "password"} placeholder={placeholder} value={value} onChange={onChange} required={required} className={styles} />
+      <button type="button" onClick={() => setShow(!show)} className={`absolute inset-y-0 right-0 px-3 flex items-center ${iconColor}`} aria-label={show ? "Hide password" : "Show password"}>
         {show ? EyeOffIcon : EyeIcon}
       </button>
     </div>

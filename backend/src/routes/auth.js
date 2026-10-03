@@ -4,6 +4,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const router = express.Router();
+const { OAuth2Client } = require("google-auth-library");
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 
 function signToken(user) {
   return jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET, {
@@ -43,6 +46,35 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Login failed" });
+  }
+});
+
+router.post("/google", async (req, res) => {
+  const { credential } = req.body;
+  if (!credential) return res.status(400).json({ error: "Missing credential" });
+
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name } = payload;
+
+    let user = await User.findOne({ $or: [{ googleId }, { email: email.toLowerCase() }] });
+
+    if (!user) {
+      user = await User.create({ name, email: email.toLowerCase(), googleId, role: "customer" });
+    } else if (!user.googleId) {
+      user.googleId = googleId;
+      await user.save();
+    }
+
+    const token = signToken(user);
+    res.json({ user: { id: user._id, name: user.name, email: user.email, role: user.role }, token });
+  } catch (err) {
+    console.error(err);
+    res.status(401).json({ error: "Invalid Google token" });
   }
 });
 

@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef  } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
 import { api } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import PasswordInput from "../components/PasswordInput";
-
 const SLIDES = [
   { image: "https://i.pinimg.com/736x/86/68/7e/86687edec563b7236b83aa5e82fb5f18.jpg", heading: "Shop the Latest Trends", subtext: "New arrivals added every week, curated just for you." },
   { image: "https://i.pinimg.com/1200x/3f/73/e7/3f73e76064bed6e2666708a380c59922.jpg", heading: "Fast & Secure Checkout", subtext: "Pay with confidence, powered by Stripe." },
@@ -44,7 +43,31 @@ export default function Login() {
       setLoading(false);
     }
   }
+const googleButtonRef = useRef(null);
 
+useEffect(() => {
+  if (!window.google || !googleButtonRef.current) return;
+
+  window.google.accounts.id.initialize({
+    client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+    callback: async (response) => {
+      try {
+        const data = await api.googleLogin(response.credential);
+        login(data.user, data.token);
+        showToast("Welcome!", "success");
+        navigate("/");
+      } catch (err) {
+        showToast(err.message || "Google sign-in failed", "error");
+      }
+    },
+  });
+
+  window.google.accounts.id.renderButton(googleButtonRef.current, {
+    theme: dark ? "filled_black" : "outline",
+    size: "large",
+    width: 320,
+  });
+}, [dark]);
   const slide = SLIDES[slideIndex];
   const inputStyle = dark
     ? "w-full bg-black border border-gray-700 text-white placeholder-gray-500 rounded-lg px-3 py-2 text-sm"
@@ -87,7 +110,12 @@ export default function Login() {
         <p className={`text-sm text-center mb-6 ${dark ? "text-gray-400" : "text-muted"}`}>
           {mode === "login" ? "Sign in to continue" : "Join us and start shopping"}
         </p>
-
+        <div ref={googleButtonRef} className="flex justify-center mb-4" />
+<div className={`flex items-center gap-3 mb-4 text-xs ${dark ? "text-gray-500" : "text-muted"}`}>
+  <div className={`flex-1 h-px ${dark ? "bg-gray-700" : "bg-gray-200"}`} />
+  OR
+  <div className={`flex-1 h-px ${dark ? "bg-gray-700" : "bg-gray-200"}`} />
+</div>
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === "register" && (
             <input

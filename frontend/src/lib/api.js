@@ -41,4 +41,5 @@ export const api = {
   request("/password-reset/forgot-password", { method: "POST", body: { email } }),
 resetPassword: (token, newPassword) =>
   request("/password-reset/reset-password", { method: "POST", body: { token, newPassword } }),
+googleLogin: (credential) => request("/auth/google", { method: "POST", body: { credential } }),
 };
